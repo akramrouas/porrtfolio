@@ -28,12 +28,19 @@ export interface TabItem {
   icon: LucideIcon;
   label: string;
 }
+export interface SanityImage {
+  _type: "image";
+  asset: {
+    _ref: string; 
+    _type: "reference";
+  };
+}
 
 export interface Project {
   _id: string;
   title: string;
   description: string;
-  images: any[];
+  images: SanityImage[];
   tags: string[];
   demoLink: string;
   githubLink: string;
