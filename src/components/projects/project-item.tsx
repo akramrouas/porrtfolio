@@ -1,10 +1,9 @@
 import { FC } from "react";
 import { Calendar, Eye, Github, LayoutDashboard, Tags } from "lucide-react";
-
 import ProjectCard from "./project-card";
 import Carousel from "./carousel";
 import InfoItem from "./info-item";
-
+import { urlForImage } from "@/sanity/lib/image";
 import { Project } from "@/app/types/interfaces";
 import {
   Dialog,
@@ -13,7 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { urlFor } from "@/sanity/lib/image";
 import { Separator } from "@/components/ui/separator";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -22,12 +20,25 @@ interface ProjectItemProps {
 }
 
 const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
+  const carouselImages = project.images?.map((image) => ({
+    src: urlForImage(image),
+    alt: image.alt || project.title,
+  })) || [];
+
+  const publishedDate = project.publishedAt 
+    ? new Date(project.publishedAt).toLocaleDateString('fr-FR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    : "N/A";
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <ProjectCard
-          imageUrl={urlFor(project.images[0])}
-          title={project.title}
+        <ProjectCard 
+          imageUrl={carouselImages[0]?.src} 
+          title={project.title} 
         />
       </DialogTrigger>
       <DialogContent className="p-0 sm:max-w-4xl lg:max-w-7xl">
@@ -37,29 +48,27 @@ const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
           </DialogTitle>
         </DialogHeader>
         <div className="grid lg:grid-cols-2 gap-4 p-4 max-h-[85vh] overflow-x-hidden overflow-y-auto">
-          <Carousel images={project.images} />
+          <Carousel images={carouselImages} />
           <div className="space-y-4 lg:space-y-6 p-2 lg:p-4 size-full">
             <p className="text-sm">{project.description}</p>
             <Separator />
             <article className="space-y-2 lg:space-y-3">
-              <InfoItem icon={Calendar} label="published">
-              <p className="font-semibold">
-    {project.publishedAt
-      ? new Date(project.publishedAt).toLocaleString()
-      : "N/A"}
-  </p>
-              </InfoItem>
-              <InfoItem icon={LayoutDashboard} label="layout">
+              <InfoItem icon={Calendar} label="Publié le">
                 <p className="font-semibold">
-                  {project.isResponsive ? "responsive" : "n/a"}
+                  {publishedDate}
                 </p>
               </InfoItem>
-              <InfoItem icon={Tags} label="tags">
+              <InfoItem icon={LayoutDashboard} label="Adaptabilité">
+                <p className="font-semibold">
+                  {project.isResponsive ? "Responsive" : "Non responsive"}
+                </p>
+              </InfoItem>
+              <InfoItem icon={Tags} label="Technologies">
                 <div className="flex items-center flex-wrap gap-2">
-                  {project.tags.map((tag, index) => (
+                  {project.tags?.map((tag, index) => (
                     <span
-                      key={index}
-                      className="border rounded-sm py-1 px-2 hover:bg-muted cursor-pointer"
+                      key={`${tag}-${index}`}
+                      className="border rounded-sm py-1 px-2 hover:bg-muted cursor-pointer text-xs"
                     >
                       {tag}
                     </span>
@@ -69,22 +78,30 @@ const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
             </article>
             <Separator />
             <div className="flex items-center gap-2">
-              <a
-                href={project.demoLink}
-                className={buttonVariants()}
-                target="_blank"
-              >
-                <Eye className="size-4" />
-                <span>view demo</span>
-              </a>
-              <a
-                href={project.githubLink}
-                className={buttonVariants({ variant: "outline" })}
-                target="_blank"
-              >
-                <Github className="size-4" />
-                <span>source code</span>
-              </a>
+              {project.demoLink && (
+                <a
+                  href={project.demoLink}
+                  className={buttonVariants({ size: "sm" })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Voir la démo"
+                >
+                  <Eye className="size-4 mr-2" />
+                  <span>Voir la démo</span>
+                </a>
+              )}
+              {project.githubLink && (
+                <a
+                  href={project.githubLink}
+                  className={buttonVariants({ variant: "outline", size: "sm" })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Code source"
+                >
+                  <Github className="size-4 mr-2" />
+                  <span>Code source</span>
+                </a>
+              )}
             </div>
           </div>
         </div>

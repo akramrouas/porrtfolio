@@ -30,8 +30,10 @@ const HomeSection = () => {
         <h5 className="text-xl md:text-2xl font-semibold capitalize">
           full stack  developer
         </h5>
-        <p className="leading-7 md:text-lg md:max-w-[85%] text-center md:text-start">
-        I’m Akram Rouas, a 23-year-old full-stack developer passionate about building clean and efficient web applications.console.log("Rendering HomeSection component");        </p>
+        <p className="leading-7 md:text-lg md:max-w-[85%] text-center md:text-left">
+  I’m Akram Rouas, a 23-year-old full-stack developer passionate about crafting clean, efficient, and user-friendly web applications.
+</p>
+
         <div className="flex items-center gap-2 py-4">
           <a
             href="#projects"
