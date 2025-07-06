@@ -1,4 +1,4 @@
-name: Test Nextjs + Sanity
+name: Test Nextjs + Sanity studio
 
 on:
   push:
